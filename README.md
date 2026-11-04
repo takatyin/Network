@@ -2,7 +2,7 @@
 
 Hands-on computer networking experiments based on concepts from *Computer Networks: A Systems Approach* (Peterson and Davie, v6.1).
 
-## 01 — Sequential TCP Echo Server (Python)
+## 01 — Threaded TCP Echo Server (Python)
 
 A minimal TCP server implemented using Python's standard `socket` library, without a web framework.
 
@@ -57,11 +57,11 @@ The client uses `shutdown(SHUT_WR)` to signal end-of-input while continuing to r
 
 ### Known limitation
 
-This is deliberately a **sequential/blocking** server. While one client is connected, the program waits on that client's `recv()` and does not call `accept()` for another client. The OS may still establish and queue other connections, but their application data will not be processed until the current client disconnects.
+Each accepted connection is handled in its own daemon thread; the main thread returns to `accept()` without waiting for the current client's `recv()`. This is a learning example: there is no thread-count limit, client timeout, or graceful worker shutdown.
 
 ### Next iterations
 
-- Separate PR: concurrent handling using `threading`, with resource limits and timeouts
+- Add limits on concurrent connections and per-client timeouts
 - Separate PR: event-driven I/O using `selectors`
 - Comparative load tests: latency, throughput, and connection concurrency
 

@@ -1,7 +1,17 @@
-"""Sequential TCP echo server for loopback networking experiments."""
+"""Thread-per-connection TCP echo server for loopback experiments."""
 
 import argparse
 import socket
+import threading
+
+
+def handle_client(conn: socket.socket) -> None:
+    with conn:
+        while True:
+            data = conn.recv(4096)
+            if not data:
+                break
+            conn.sendall(data)
 
 
 def serve(host: str = "127.0.0.1", port: int = 8080) -> None:
@@ -15,17 +25,11 @@ def serve(host: str = "127.0.0.1", port: int = 8080) -> None:
         while True:
             conn, addr = server.accept()
             print(f"Connected: {addr}", flush=True)
-            with conn:
-                while True:
-                    data = conn.recv(4096)
-                    if not data:  # EOF: the peer closed its sending direction
-                        break
-                    conn.sendall(data)
-            print(f"Disconnected: {addr}", flush=True)
+            threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Sequential TCP echo server")
+    parser = argparse.ArgumentParser(description="Threaded TCP echo server")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8080)
     args = parser.parse_args()

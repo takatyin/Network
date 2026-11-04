@@ -32,11 +32,10 @@ The server binds to `127.0.0.1:8080` by default, so only programs on the same ma
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
-python3 -m pytest tests/test_threading.py -q
-python3 -m unittest discover -s tests -v
+python3 -m pytest -q
 ```
 
-Tests start an actual server process on an ephemeral loopback port and check small messages, binary payloads, empty payloads, and sequential connections.
+Pytest fixtures start an actual server process on an ephemeral loopback port and check small messages, binary payloads, empty payloads, and sequential connections.
 
 ### How it works
 

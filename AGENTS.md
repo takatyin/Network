@@ -17,3 +17,7 @@
 - Keep production code focused; comprehensive test code is welcome.
 - Introduce concurrency and performance optimizations in separate, reviewable PRs.
 - Explain why changes are needed and preserve the sequential TCP server as a baseline.
+
+## Testing
+- Use `pytest` for Python tests, including fixtures and parametrization when helpful.
+- Run `python3 -m pytest -q` before reporting test success.
